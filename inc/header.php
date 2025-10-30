@@ -4,13 +4,15 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 ?>
 <header style="background:#222; color:white; padding:15px; text-align:center;">
-  <h1>GadgetHut</h1>
-  <nav>
+  <h1 style="margin:0;">GadgetHut</h1>
+  <nav style="margin-top:10px;">
     <a href="index.php" style="color:white;margin:0 10px;">Home</a>
     <a href="product.php" style="color:white;margin:0 10px;">Products</a>
     <a href="cartproduct.php" style="color:white;margin:0 10px;">Cart</a>
     <a href="search.php" style="color:white;margin:0 10px;">Search</a>
+
     <?php if (isset($_SESSION['user'])): ?>
+        <span style="margin-left:20px;">Welcome, <?= htmlspecialchars($_SESSION['user']['username']); ?>!</span>
         <a href="logout.php" style="color:white;margin:0 10px;">Logout</a>
     <?php else: ?>
         <a href="user_login.php" style="color:white;margin:0 10px;">Login</a>
@@ -18,4 +20,3 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php endif; ?>
   </nav>
 </header>
-<hr>

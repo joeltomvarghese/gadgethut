@@ -1,3 +1,3 @@
-<footer style="text-align:center; padding:20px; background:#f4f4f4; margin-top:40px;">
-  <p>&copy; <?php echo date("Y"); ?> GadgetHut. All rights reserved.</p>
+<footer style="background:#111; color:white; text-align:center; padding:10px; margin-top:20px;">
+  <p>&copy; <?= date('Y'); ?> GadgetHut - Refurbished Gadgets Store</p>
 </footer>
