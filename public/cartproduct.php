@@ -1,36 +1,36 @@
 <?php
-require_once 'inc/db.php';
 session_start();
+include("../inc/db.php");
+include("../inc/header.php");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_id'])) {
-  $id = (int)$_POST['add_id'];
-  $qty = max(1,(int)$_POST['qty']);
-  if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
-  if (!isset($_SESSION['cart'][$id])) $_SESSION['cart'][$id] = 0;
-  $_SESSION['cart'][$id] += $qty;
-  header('Location: cart.php'); exit;
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
 }
-if (isset($_GET['remove'])) {
-  $rid = (int)$_GET['remove'];
-  unset($_SESSION['cart'][$rid]);
-  header('Location: cart.php'); exit;
+
+if (isset($_POST['add_to_cart'])) {
+    $product_id = $_POST['product_id'];
+    $_SESSION['cart'][] = $product_id;
+    echo "<p style='color:green; text-align:center;'>Product added to cart!</p>";
 }
-require_once 'inc/header.php';
-$cart = $_SESSION['cart'] ?? [];
-if (!$cart) echo "<p>Your cart is empty</p>";
-else {
-  $ids = implode(',', array_keys($cart));
-  $stmt = $pdo->query("SELECT * FROM products WHERE id IN ($ids)");
-  $products = $stmt->fetchAll(PDO::FETCH_UNIQUE);
-  $total = 0;
-  echo '<table class="cart">';
-  echo '<tr><th>Product</th><th>Qty</th><th>Price</th><th></th></tr>';
-  foreach($cart as $pid=>$q) {
-    $p = $products[$pid];
-    $line = $p['price'] * $q; $total += $line;
-    echo "<tr><td>".htmlspecialchars($p['title'])."</td><td>$q</td><td>₹".number_format($line,2)."</td><td><a href='cart.php?remove=$pid'>Remove</a></td></tr>";
-  }
-  echo "<tr><td colspan='2'></td><td><strong>₹".number_format($total,2)."</strong></td><td><a href='checkout.php'>Checkout</a></td></tr>";
-  echo '</table>';
+
+if (count($_SESSION['cart']) > 0) {
+    $ids = implode(",", $_SESSION['cart']);
+    $result = mysqli_query($conn, "SELECT * FROM products WHERE id IN ($ids)");
+
+    echo "<h2 style='text-align:center;'>Your Cart</h2>";
+    echo "<div style='display:flex;flex-wrap:wrap;gap:20px;justify-content:center;'>";
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "
+        <div style='border:1px solid #ccc; padding:10px; width:200px; text-align:center;'>
+            <h3>{$row['name']}</h3>
+            <p>₹{$row['price']}</p>
+        </div>";
+    }
+    echo "</div>";
+    echo "<div style='text-align:center; margin-top:20px;'><a href='checkout.php'>Proceed to Checkout</a></div>";
+} else {
+    echo "<p style='text-align:center;'>Your cart is empty!</p>";
 }
-require_once 'inc/footer.php';
+
+include("../inc/footer.php");
+?>

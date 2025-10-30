@@ -9,15 +9,15 @@ if (isset($_POST['register'])) {
 
   $check = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
   if (mysqli_num_rows($check) > 0) {
-    echo "Email already registered!";
+    echo "<p style='color:red;'>Email already registered!</p>";
   } else {
     mysqli_query($conn, "INSERT INTO users (name,email,password) VALUES('$name','$email','$password')");
-    echo "Registered successfully! <a href='user_login.php'>Login</a>";
+    echo "<p style='color:green;'>Registered successfully! <a href='user_login.php'>Login</a></p>";
   }
 }
 ?>
 
-<form method="post">
+<form method="post" style="text-align:center;">
   <h2>Register</h2>
   <input type="text" name="name" placeholder="Name" required><br>
   <input type="email" name="email" placeholder="Email" required><br>

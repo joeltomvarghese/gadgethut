@@ -1,23 +1,20 @@
 <?php
-require_once 'inc/db.php';
-require_once 'inc/header.php';
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-$stmt->execute([$id]);
-$p = $stmt->fetch();
-if (!$p) { echo "<p>Product not found</p>"; require_once 'inc/footer.php'; exit; }
+include("../inc/db.php");
+include("../inc/header.php");
+
+$id = $_GET['id'];
+$result = mysqli_query($conn, "SELECT * FROM products WHERE id=$id");
+$product = mysqli_fetch_assoc($result);
 ?>
-<div class="product-detail">
-  <img src="<?php echo htmlspecialchars($p['image']); ?>" alt="">
-  <div>
-    <h2><?php echo htmlspecialchars($p['title']); ?></h2>
-    <p><?php echo nl2br(htmlspecialchars($p['description'])); ?></p>
-    <p>₹<?php echo number_format($p['price'],2); ?></p>
-    <form method="post" action="cart.php">
-      <input type="hidden" name="add_id" value="<?php echo $p['id']; ?>">
-      <input type="number" name="qty" value="1" min="1" max="<?php echo $p['qty']; ?>">
-      <button type="submit">Add to cart</button>
-    </form>
-  </div>
+
+<div style="text-align:center;">
+  <h2><?php echo $product['name']; ?></h2>
+  <p><?php echo $product['description']; ?></p>
+  <p>Price: ₹<?php echo $product['price']; ?></p>
+  <form method="post" action="cartproduct.php">
+    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+    <button type="submit" name="add_to_cart">Add to Cart</button>
+  </form>
 </div>
-<?php require_once 'inc/footer.php'; ?>
+
+<?php include("../inc/footer.php"); ?>
